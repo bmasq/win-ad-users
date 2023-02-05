@@ -49,9 +49,10 @@ class Usuari:
         else:
             self.dept = dept
         self.grups.append(self.deptsGrups[self.dept])
+        self._usuariAD = f"CN={self._usuari},OU={self.dept},{self.__arrel}"
 
     def crearUsuari(self):
-        ordre = f"dsadd user \"CN={self._usuari},OU={self.dept},{self.__arrel}\""
+        ordre = f"dsadd user \"{self._usuariAD}\""
         ordre += f" -pwd {self.__contrasenya} -mustchpwd yes"
         ordre += " -memberof"
         for grup in self.grups:
@@ -60,6 +61,13 @@ class Usuari:
         ordre += f" -ln \"{self.__llinatges}\""
         ordre += f" -dept \"{self.dept}\""
         ordre += " -company \"CB Smart Security\""
-        subprocess.run(ordre, shell=True, check=True)
+        try:
+            subprocess.run(ordre, shell=True, check=True, stderr=subprocess.DEVNULL)
+        except:
+            subprocess.run(f"dsmod user \"{self._usuariAD}\" -disabled no",
+                            shell=True, check=True, stderr=subprocess.DEVNULL)
+        """ Solució ¿temporal? al bug que crea els usuaris deshabilitats:
+        ("El objeto se creó satisfactoriamente pero hubo un error durante las 
+        operaciones posteriores a la creación") """
 
     # def modificarUsuari, eliminarUsuari, etc.
