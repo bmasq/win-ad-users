@@ -64,7 +64,7 @@ class Usuari:
         try:
             subprocess.run(ordre, shell=True, check=True, stderr=subprocess.DEVNULL)
         except:
-            subprocess.run(f"dsmod user \"{self._usuariAD}\" -disabled no",
+            subprocess.run(f"dsmod user \"{self._usuariAD}\" -disabled no -mustchpwd yes",
                             shell=True, check=True, stderr=subprocess.DEVNULL)
         """ Solució ¿temporal? al bug que crea els usuaris deshabilitats:
         ("El objeto se creó satisfactoriamente pero hubo un error durante las 
