@@ -1,7 +1,13 @@
 from Usuari import Usuari
 import csv
+import sys
 
-with open("usuaris.csv", "r", encoding="utf-8") as f:
+try:
+    filename = sys.argv[1]
+except IndexError as e:
+    print("ERROR: " + e.args[0])
+    exit(1)
+with open(filename, "r", encoding="utf-8") as f:
     files = list(csv.reader(f, delimiter=';'))
 
 usuaris = list()
