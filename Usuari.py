@@ -12,13 +12,13 @@ class Usuari:
     # correspondència entre departaments i el seu grup
     # podria ser un mètode que llegeix un JSON
     deptsGrups = {
-        "Comptabilitat":"CN=comptabilitat," + __arrel,
-        "Vendes":"CN=vendes," + __arrel,
-        "Administració":"CN=administracio," + __arrel,
-        "Tècnics":"CN=tecnics," + __arrel,
-        "Informàtica":"CN=informatica," + __arrel,
-        "Direcció":"CN=direccio," + __arrel,
-        "Caps d'Àrea":"CN=caps," + __arrel
+        "Comptabilitat":"CN=comptabilitat,OU=Comptabilitat," + __arrel,
+        "Vendes":"CN=vendes,OU=Vendes," + __arrel,
+        "Administració":"CN=administracio,OU=Administració," + __arrel,
+        "Tècnics":"CN=tecnics,OU=Tècnics," + __arrel,
+        "Informàtica":"CN=informatica,OU=Informàtica," + __arrel,
+        "Direcció":"CN=direccio,OU=Direcció," + __arrel,
+        "Caps d'Àrea":"CN=caps,OU=Caps d'Àrea," + __arrel
     }
 
     @staticmethod
@@ -61,13 +61,15 @@ class Usuari:
         ordre += f" -ln \"{self.__llinatges}\""
         ordre += f" -dept \"{self.dept}\""
         ordre += " -company \"CB Smart Security\""
+        res = None
         try:
-            subprocess.run(ordre, shell=True, check=True, stderr=subprocess.DEVNULL)
+            res = subprocess.run(ordre, shell=True, check=True,
+                                capture_output=True, text=True)
+            print(res.stdout)
         except:
-            subprocess.run(f"dsmod user \"{self._usuariAD}\" -disabled no -mustchpwd yes",
-                            shell=True, check=True, stderr=subprocess.DEVNULL)
-        """ Solució ¿temporal? al bug que crea els usuaris deshabilitats:
-        ("El objeto se creó satisfactoriamente pero hubo un error durante las 
-        operaciones posteriores a la creación") """
+            if res:
+                print("ERROR: " + res.stderr())
+            else:
+                print("ERROR: error desconegut")
 
     # def modificarUsuari, eliminarUsuari, etc.
